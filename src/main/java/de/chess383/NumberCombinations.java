@@ -11,9 +11,9 @@ public class NumberCombinations {
     
     private final int HECTOC_LIMIT = 6;
 
-    private String digits;
-    private Integer[] numbers = new Integer[HECTOC_LIMIT];
-    private List<List<Integer>> combinations;
+    private final String digits;
+    private final Integer[] numbers = new Integer[HECTOC_LIMIT];
+    private final List<List<Integer>> combinations;
 
     public NumberCombinations( String input ) {
         this.digits = input;
@@ -136,7 +136,7 @@ public class NumberCombinations {
     public String toString() {
         final Iterator iterator = this.combinations.iterator();
         if( iterator.hasNext()) {
-            StringBuffer builder = new StringBuffer("");
+            StringBuffer builder = new StringBuffer();
             builder.append(iterator.next());
             while( iterator.hasNext()) {
                 builder.append(iterator.next());

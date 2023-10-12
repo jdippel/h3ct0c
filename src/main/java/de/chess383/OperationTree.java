@@ -5,18 +5,24 @@ import java.util.List;
 
 public class OperationTree {
 
-    private List<Double> input;
+    static private String lastDescription = "";    // only for testing
 
-    private String description;
+    private final List<Double> input;
 
-    public OperationTree( List<Double> numbers, String description ) {
+    private final String description;
+
+    public OperationTree( List<Double> numbers, String description) {
         this.input = numbers;
         this.description = description;
     }
 
+    private boolean deltaDouble( Double value ) {
+        return value > -0.005 && value < 0.005;
+    }
+
     public void operate() {
         if( input.size() == 1 ) {
-            if( input.get(0) < 100.001 && input.get(0) > 99.999 ) {
+            if( deltaDouble(input.get(0) - 100.0 )) {
                 System.out.println("Match: 100 - " + description);
             }
         }
@@ -27,7 +33,7 @@ public class OperationTree {
                 operateADD(cursor);
                 operateSUB(cursor);
                 operateMUL(cursor);
-                operateDIV(cursor);
+                if( ! deltaDouble(this.input.get(cursor+1))) operateDIV(cursor);
                 operatePOW(cursor);
                 cursor++;
             }
@@ -44,7 +50,7 @@ public class OperationTree {
         Double operationValue = operator.operate(this.input.get(operatorCursor), this.input.get(operatorCursor+1) );
         list.add( operationValue );
         builder.append( String.format( "( %s %-5.3f %-5.3f = %-5.3f ) ",
-                operator.toString(), this.input.get(operatorCursor), this.input.get(operatorCursor+1), operationValue ));
+                operator, this.input.get(operatorCursor), this.input.get(operatorCursor+1), operationValue ));
 
         int numberOfNumbers = this.input.size();
         for( int cursor=operatorCursor+2; cursor<numberOfNumbers; cursor++) {
@@ -53,26 +59,32 @@ public class OperationTree {
         }
         builder.append( "]  " );
         builder.append(this.description);
+        lastDescription = builder.toString();;
 
         new OperationTree( list, builder.toString()).operate();
     }
 
-    private void operateADD(int operatorCursor) {
+    public void operateADD(int operatorCursor) {
         operateOP(operatorCursor, Operator.ADD );
     }
 
-    private void operateSUB(int operatorCursor) {
+    public void operateSUB(int operatorCursor) {
         operateOP(operatorCursor, Operator.SUB );
     }
 
-    private void operateMUL(int operatorCursor) {
+    public void operateMUL(int operatorCursor) {
         operateOP(operatorCursor, Operator.MUL );
     }
 
-    private void operateDIV(int operatorCursor) {
-        operateOP(operatorCursor, Operator.DIV );
+    public void operateDIV(int operatorCursor) { operateOP(operatorCursor, Operator.DIV );
     }
-    private void operatePOW(int operatorCursor) {
+
+    public void operatePOW(int operatorCursor) {
         operateOP(operatorCursor, Operator.POW );
+    }
+
+    @Override
+    public String toString() {
+        return lastDescription;
     }
 }
